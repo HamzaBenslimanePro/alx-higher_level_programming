@@ -4,8 +4,8 @@
 import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from relationship_state import Base, State
-from relationship_city import City
+from relationship_state import State
+from relationship_city import Base, City
 
 if __name__ == "__main__":
     username = sys.argv[1]
@@ -13,8 +13,8 @@ if __name__ == "__main__":
     db_name = sys.argv[3]
 
     # Create an engine to interact with the database
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost:3306/{}'
-                           .format(username, password, db_name))
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost:/{}'
+                           .format(username, password, db_name),pool_pre_ping=True)
 
     # Create all tables in the engine
     Base.metadata.create_all(engine)
@@ -26,8 +26,7 @@ if __name__ == "__main__":
     session = Session()
 
     # Create the State "California" and the City "San Francisco"
-    california = State(name='California', cities=[City(name='San Francisco')])
-    session.add(california)
+    session.add(City(name = "San Francisco", state=State(name="Californie")))
     session.commit()
 
     # Close the session
